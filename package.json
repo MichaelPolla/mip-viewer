@@ -16,6 +16,8 @@
     "dev": "budo src/app.js:bundle.js --port 3000",
     "dev:electron": "concurrently \"watchify src/app.js -o bundle.js\" \"npm start\"",
     "test": "node scripts/gen_test.js",
+    "prod": "NODE_ENV=production node server.js",
+    "postinstall": "webpack -p",
     "deploy": "npm run build && now --static && now alias && npm run clean",
     "clean": "rm bundle.js",
     "postversion": "git push && git push --tags"
@@ -55,6 +57,7 @@
     "concurrently": "^3.5.0",
     "electron": "^1.8.4",
     "electron-packager": "^9.1.0",
+    "express": "^4.13.3",
     "glslify": "^6.1.0",
     "node-fetch": "^1.7.3",
     "watchify": "^3.9.0"
