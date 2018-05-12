@@ -18,6 +18,8 @@ const DEFAULT_CAMERA = '[default]';
 
 const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
+const annotation = document.querySelector(".annotation");
+
 // glTF texture types. `envMap` is deliberately omitted, as it's used internally
 // by the loader but not part of the glTF format.
 const MAP_NAMES = [
@@ -44,6 +46,16 @@ module.exports = class Viewer {
     this.mixer = null;
     this.clips = [];
     this.gui = null;
+
+    // Define a sphere to be shown when clicking somewhere on a 3d model
+    this.raycaster = new THREE.Raycaster();
+    this.mouse = new THREE.Vector2();
+
+    var geometry = new THREE.SphereGeometry( 5 );
+    var material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
+    this.sphereInter = new THREE.Mesh(geometry, material);
+    this.sphereInter.visible = false;
+    // ---------------
 
     this.state = {
       environment: options.preset === Preset.ASSET_GENERATOR
@@ -81,6 +93,7 @@ module.exports = class Viewer {
     this.defaultCamera = new THREE.PerspectiveCamera( fov, el.clientWidth / el.clientHeight, 0.01, 1000 );
     this.activeCamera = this.defaultCamera;
     this.scene.add( this.defaultCamera );
+    this.scene.add( this.sphereInter );
 
     this.renderer = window.renderer = new THREE.WebGLRenderer({antialias: true});
     this.renderer.gammaOutput = true;
@@ -116,6 +129,35 @@ module.exports = class Viewer {
     this.animate = this.animate.bind(this);
     requestAnimationFrame( this.animate );
     window.addEventListener('resize', this.resize.bind(this), false);
+    window.addEventListener('mousedown', this.onMouseDown.bind(this), false);
+  }
+
+  onMouseDown(event) {
+    event.preventDefault();
+
+    this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+    this.raycaster.setFromCamera(this.mouse, this.activeCamera);
+
+    var intersects = this.raycaster.intersectObjects(this.scene.children, true);
+
+    if(intersects.length > 0) {
+      //console.dir(intersects[0]);
+      intersects[0].object.material.color.setHex(Math.random() * 0xffffff);
+
+      //this.sphereInter.visible = true;
+      //this.sphereInter.position.copy(intersects[0].point);
+
+
+      var particle = new THREE.Mesh(new THREE.SphereGeometry(1),
+        new THREE.MeshBasicMaterial({color:0xff0000}) );
+      particle.position.copy( intersects[ 0 ].point );
+      this.scene.add( particle );
+
+    } else {
+      //this.sphereInter.visible = false;
+    }
   }
 
   animate (time) {
@@ -136,7 +178,22 @@ module.exports = class Viewer {
   render () {
 
     this.renderer.render( this.scene, this.activeCamera );
+    updateScreenPosition();
 
+  }
+
+  updateScreenPosition() {
+    const vector = new THREE.Vector3(250, 250, 250);
+    const canvas = this.renderer.domElement;
+
+    vector.project(this.activeCamera);
+
+    vector.x = Math.round((0.5 + vector.x / 2) * (canvas.width / window.devicePixelRatio));
+    vector.y = Math.round((0.5 - vector.y / 2) * (canvas.height / window.devicePixelRatio));
+
+    this.annotation.style.top = `${vector.y}px`;
+    this.annotation.style.left = `${vector.x}px`;
+    this.annotation.style.opacity = spriteBehindObject ? 0.25 : 1;
   }
 
   resize () {
