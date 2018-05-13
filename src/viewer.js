@@ -12,13 +12,12 @@ require('three/examples/js/loaders/HDRCubeTextureLoader');
 require('three/examples/js/pmrem/PMREMGenerator');
 require('three/examples/js/pmrem/PMREMCubeUVPacker');
 
-THREE.DRACOLoader.setDecoderPath( 'lib/draco/' );
+THREE.DRACOLoader.setDecoderPath('lib/draco/');
 
 const DEFAULT_CAMERA = '[default]';
 
 const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-const annotation = document.querySelector(".annotation");
 
 // glTF texture types. `envMap` is deliberately omitted, as it's used internally
 // by the loader but not part of the glTF format.
@@ -33,11 +32,11 @@ const MAP_NAMES = [
   'specularMap',
 ];
 
-const Preset = {ASSET_GENERATOR: 'assetgenerator'};
+const Preset = { ASSET_GENERATOR: 'assetgenerator' };
 
 module.exports = class Viewer {
 
-  constructor (el, options) {
+  constructor(el, options) {
     this.el = el;
     this.options = options;
 
@@ -51,8 +50,11 @@ module.exports = class Viewer {
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
 
-    var geometry = new THREE.SphereGeometry( 5 );
-    var material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
+    this.originalAnnotationVector = new THREE.Vector3();
+    this.annotationPosition = new THREE.Vector3();
+
+    var geometry = new THREE.SphereGeometry(5);
+    var material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
     this.sphereInter = new THREE.Mesh(geometry, material);
     this.sphereInter.visible = false;
     // ---------------
@@ -90,18 +92,18 @@ module.exports = class Viewer {
     const fov = options.preset === Preset.ASSET_GENERATOR
       ? 0.8 * 180 / Math.PI
       : 60;
-    this.defaultCamera = new THREE.PerspectiveCamera( fov, el.clientWidth / el.clientHeight, 0.01, 1000 );
+    this.defaultCamera = new THREE.PerspectiveCamera(fov, el.clientWidth / el.clientHeight, 0.01, 1000);
     this.activeCamera = this.defaultCamera;
-    this.scene.add( this.defaultCamera );
-    this.scene.add( this.sphereInter );
+    this.scene.add(this.defaultCamera);
+    this.scene.add(this.sphereInter);
 
-    this.renderer = window.renderer = new THREE.WebGLRenderer({antialias: true});
+    this.renderer = window.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.gammaOutput = true;
-    this.renderer.setClearColor( 0xcccccc );
-    this.renderer.setPixelRatio( window.devicePixelRatio );
-    this.renderer.setSize( el.clientWidth, el.clientHeight );
+    this.renderer.setClearColor(0xcccccc);
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.setSize(el.clientWidth, el.clientHeight);
 
-    this.controls = new THREE.OrbitControls( this.defaultCamera, this.renderer.domElement );
+    this.controls = new THREE.OrbitControls(this.defaultCamera, this.renderer.domElement);
     this.controls.autoRotate = false;
     this.controls.autoRotateSpeed = -10;
 
@@ -127,7 +129,7 @@ module.exports = class Viewer {
     if (options.kiosk) this.gui.close();
 
     this.animate = this.animate.bind(this);
-    requestAnimationFrame( this.animate );
+    requestAnimationFrame(this.animate);
     window.addEventListener('resize', this.resize.bind(this), false);
     window.addEventListener('mousedown', this.onMouseDown.bind(this), false);
   }
@@ -135,34 +137,39 @@ module.exports = class Viewer {
   onMouseDown(event) {
     event.preventDefault();
 
-    this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-    this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    const canvas = this.renderer.domElement;
+    const annotation = document.querySelector(".annotation");
+
+    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    this.mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
 
     this.raycaster.setFromCamera(this.mouse, this.activeCamera);
 
     var intersects = this.raycaster.intersectObjects(this.scene.children, true);
 
-    if(intersects.length > 0) {
-      //console.dir(intersects[0]);
+    if (intersects.length > 0) {
       intersects[0].object.material.color.setHex(Math.random() * 0xffffff);
 
-      //this.sphereInter.visible = true;
-      //this.sphereInter.position.copy(intersects[0].point);
-
-
       var particle = new THREE.Mesh(new THREE.SphereGeometry(1),
-        new THREE.MeshBasicMaterial({color:0xff0000}) );
-      particle.position.copy( intersects[ 0 ].point );
-      this.scene.add( particle );
+        new THREE.MeshBasicMaterial({ color: 0xff0000 }));
+      particle.position.copy(intersects[0].point);
+      this.scene.add(particle);
 
-    } else {
-      //this.sphereInter.visible = false;
+      this.originalAnnotationVector.copy(intersects[0].point);
+      this.annotationPosition.copy(this.originalAnnotationVector);
+      this.annotationPosition.project(this.activeCamera);
+      this.annotationPosition.x = Math.round((0.5 + this.annotationPosition.x / 2) * (canvas.width / window.devicePixelRatio));
+      this.annotationPosition.y = Math.round((0.5 - this.annotationPosition.y / 2) * (canvas.height / window.devicePixelRatio));
+
+      annotation.style.top = `${this.annotationPosition.y}px`;
+      annotation.style.left = `${this.annotationPosition.x}px`;
+
     }
   }
 
-  animate (time) {
+  animate(time) {
 
-    requestAnimationFrame( this.animate );
+    requestAnimationFrame(this.animate);
 
     const dt = (time - this.prevTime) / 1000;
 
@@ -175,39 +182,37 @@ module.exports = class Viewer {
 
   }
 
-  render () {
-
-    this.renderer.render( this.scene, this.activeCamera );
-    updateScreenPosition();
-
+  render() {
+    this.renderer.render(this.scene, this.activeCamera);
+    this.updateScreenPosition();
   }
 
   updateScreenPosition() {
-    const vector = new THREE.Vector3(250, 250, 250);
     const canvas = this.renderer.domElement;
+    const annotation = document.querySelector(".annotation");
 
-    vector.project(this.activeCamera);
+    this.annotationPosition.copy(this.originalAnnotationVector);
+    this.annotationPosition.project(this.activeCamera);
+    this.annotationPosition.x = Math.round((0.5 + this.annotationPosition.x / 2) * (canvas.width / window.devicePixelRatio));
+    this.annotationPosition.y = Math.round((0.5 - this.annotationPosition.y / 2) * (canvas.height / window.devicePixelRatio));
 
-    vector.x = Math.round((0.5 + vector.x / 2) * (canvas.width / window.devicePixelRatio));
-    vector.y = Math.round((0.5 - vector.y / 2) * (canvas.height / window.devicePixelRatio));
-
-    this.annotation.style.top = `${vector.y}px`;
-    this.annotation.style.left = `${vector.x}px`;
+    annotation.style.top = `${this.annotationPosition.y}px`;
+    annotation.style.left = `${this.annotationPosition.x}px`;
     this.annotation.style.opacity = spriteBehindObject ? 0.25 : 1;
   }
 
-  resize () {
+  resize() {
 
-    const {clientHeight, clientWidth} = this.el.parentElement;
+    const { clientHeight, clientWidth } = this.el.parentElement;
 
     this.defaultCamera.aspect = clientWidth / clientHeight;
     this.defaultCamera.updateProjectionMatrix();
-    this.background.style({aspect: this.defaultCamera.aspect});
+    this.background.style({ aspect: this.defaultCamera.aspect });
     this.renderer.setSize(clientWidth, clientHeight);
 
   }
 
-  load ( url, rootPath, assetMap ) {
+  load(url, rootPath, assetMap) {
 
     const baseURL = THREE.LoaderUtils.extractUrlBase(url);
 
@@ -236,7 +241,7 @@ module.exports = class Viewer {
 
       const loader = new THREE.GLTFLoader(manager);
       loader.setCrossOrigin('anonymous');
-      loader.setDRACOLoader( new THREE.DRACOLoader() );
+      loader.setDRACOLoader(new THREE.DRACOLoader());
       const blobURLs = [];
 
       loader.load(url, (gltf) => {
@@ -262,7 +267,7 @@ module.exports = class Viewer {
    * @param {THREE.Object3D} object
    * @param {Array<THREE.AnimationClip} clips
    */
-  setContent ( object, clips ) {
+  setContent(object, clips) {
 
     this.clear();
 
@@ -283,8 +288,8 @@ module.exports = class Viewer {
 
     if (this.options.cameraPosition) {
 
-      this.defaultCamera.position.fromArray( this.options.cameraPosition );
-      this.defaultCamera.lookAt( new THREE.Vector3() );
+      this.defaultCamera.position.fromArray(this.options.cameraPosition);
+      this.defaultCamera.lookAt(new THREE.Vector3());
 
     } else {
 
@@ -324,7 +329,7 @@ module.exports = class Viewer {
 
   }
 
-  printGraph (node) {
+  printGraph(node) {
 
     console.group(' <' + node.type + '> ' + node.name);
     node.children.forEach((child) => this.printGraph(child));
@@ -335,7 +340,7 @@ module.exports = class Viewer {
   /**
    * @param {Array<THREE.AnimationClip} clips
    */
-  setClips ( clips ) {
+  setClips(clips) {
     if (this.mixer) {
       this.mixer.stopAllAction();
       this.mixer.uncacheRoot(this.mixer.getRoot());
@@ -345,10 +350,10 @@ module.exports = class Viewer {
     this.clips = clips;
     if (!clips.length) return;
 
-    this.mixer = new THREE.AnimationMixer( this.content );
+    this.mixer = new THREE.AnimationMixer(this.content);
   }
 
-  playAllClips () {
+  playAllClips() {
     this.clips.forEach((clip) => {
       this.mixer.clipAction(clip).reset().play();
       this.state.actionStates[clip.name] = true;
@@ -358,7 +363,7 @@ module.exports = class Viewer {
   /**
    * @param {string} name
    */
-  setCamera ( name ) {
+  setCamera(name) {
     if (name === DEFAULT_CAMERA) {
       this.controls.enabled = true;
       this.activeCamera = this.defaultCamera;
@@ -372,7 +377,7 @@ module.exports = class Viewer {
     }
   }
 
-  updateTextureEncoding () {
+  updateTextureEncoding() {
     const encoding = this.state.textureEncoding === 'sRGB'
       ? THREE.sRGBEncoding
       : THREE.LinearEncoding;
@@ -386,7 +391,7 @@ module.exports = class Viewer {
     });
   }
 
-  updateLights () {
+  updateLights() {
     const state = this.state;
     const lights = this.lights;
 
@@ -406,7 +411,7 @@ module.exports = class Viewer {
     }
   }
 
-  addLights () {
+  addLights() {
     const state = this.state;
 
     if (this.options.preset === Preset.ASSET_GENERATOR) {
@@ -417,30 +422,30 @@ module.exports = class Viewer {
       return;
     }
 
-    const light1  = new THREE.AmbientLight(state.ambientColor, state.ambientIntensity);
+    const light1 = new THREE.AmbientLight(state.ambientColor, state.ambientIntensity);
     light1.name = 'ambient_light';
-    this.defaultCamera.add( light1 );
+    this.defaultCamera.add(light1);
 
-    const light2  = new THREE.DirectionalLight(state.directColor, state.directIntensity);
+    const light2 = new THREE.DirectionalLight(state.directColor, state.directIntensity);
     light2.position.set(0.5, 0, 0.866); // ~60º
     light2.name = 'main_light';
-    this.defaultCamera.add( light2 );
+    this.defaultCamera.add(light2);
 
     this.lights.push(light1, light2);
   }
 
-  removeLights () {
+  removeLights() {
 
     this.lights.forEach((light) => light.parent.remove(light));
     this.lights.length = 0;
 
   }
 
-  updateEnvironment () {
+  updateEnvironment() {
 
     const environment = environments.filter((entry) => entry.name === this.state.environment)[0];
 
-    this.getCubeMapTexture( environment ).then(( texture ) => {
+    this.getCubeMapTexture(environment).then((texture) => {
 
       if ((!texture || !this.state.background) && this.activeCamera === this.defaultCamera) {
         this.scene.add(this.background);
@@ -462,11 +467,11 @@ module.exports = class Viewer {
 
   }
 
-  getCubeMapTexture (environment) {
-    const {path, format} = environment;
+  getCubeMapTexture(environment) {
+    const { path, format } = environment;
 
     // no envmap
-    if ( ! path ) return Promise.resolve();
+    if (!path) return Promise.resolve();
 
     const cubeMapURLs = [
       path + 'posx' + format, path + 'negx' + format,
@@ -475,21 +480,21 @@ module.exports = class Viewer {
     ];
 
     // hdr
-    if ( format === '.hdr' ) {
+    if (format === '.hdr') {
 
       return new Promise((resolve) => {
 
-        new THREE.HDRCubeTextureLoader().load( THREE.UnsignedByteType, cubeMapURLs, ( hdrCubeMap ) => {
+        new THREE.HDRCubeTextureLoader().load(THREE.UnsignedByteType, cubeMapURLs, (hdrCubeMap) => {
 
-          var pmremGenerator = new THREE.PMREMGenerator( hdrCubeMap );
-          pmremGenerator.update( this.renderer );
+          var pmremGenerator = new THREE.PMREMGenerator(hdrCubeMap);
+          pmremGenerator.update(this.renderer);
 
-          var pmremCubeUVPacker = new THREE.PMREMCubeUVPacker( pmremGenerator.cubeLods );
-          pmremCubeUVPacker.update( this.renderer );
+          var pmremCubeUVPacker = new THREE.PMREMCubeUVPacker(pmremGenerator.cubeLods);
+          pmremCubeUVPacker.update(this.renderer);
 
-          resolve( pmremCubeUVPacker.CubeUVRenderTarget.texture );
+          resolve(pmremCubeUVPacker.CubeUVRenderTarget.texture);
 
-        } );
+        });
 
       });
 
@@ -498,11 +503,11 @@ module.exports = class Viewer {
     // standard
     var envMap = new THREE.CubeTextureLoader().load(cubeMapURLs);
     envMap.format = THREE.RGBFormat;
-    return Promise.resolve( envMap );
+    return Promise.resolve(envMap);
 
   }
 
-  updateDisplay () {
+  updateDisplay() {
     if (this.skeletonHelpers.length) {
       this.skeletonHelpers.forEach((helper) => this.scene.remove(helper));
     }
@@ -536,9 +541,9 @@ module.exports = class Viewer {
     }
   }
 
-  addGUI () {
+  addGUI() {
 
-    const gui = this.gui = new dat.GUI({autoPlace: false, width: 260});
+    const gui = this.gui = new dat.GUI({ autoPlace: false, width: 260 });
 
     // Display controls.
     const dispFolder = gui.addFolder('Display');
@@ -579,7 +584,7 @@ module.exports = class Viewer {
     playbackSpeedCtrl.onChange((speed) => {
       if (this.mixer) this.mixer.timeScale = speed;
     });
-    this.animFolder.add({playAll: () => this.playAllClips()}, 'playAll');
+    this.animFolder.add({ playAll: () => this.playAllClips() }, 'playAll');
 
     // Morph target controls.
     this.morphFolder = gui.addFolder('Morph Targets');
@@ -595,17 +600,17 @@ module.exports = class Viewer {
     this.stats.dom.style.position = 'static';
     perfLi.appendChild(this.stats.dom);
     perfLi.classList.add('gui-stats');
-    perfFolder.__ul.appendChild( perfLi );
+    perfFolder.__ul.appendChild(perfLi);
 
     const guiWrap = document.createElement('div');
-    this.el.appendChild( guiWrap );
+    this.el.appendChild(guiWrap);
     guiWrap.classList.add('gui-wrap');
     guiWrap.appendChild(gui.domElement);
     gui.open();
 
   }
 
-  updateGUI () {
+  updateGUI() {
     this.cameraFolder.domElement.style.display = 'none';
 
     this.morphCtrls.forEach((ctrl) => ctrl.remove());
@@ -640,7 +645,7 @@ module.exports = class Viewer {
       this.morphFolder.domElement.style.display = '';
       morphMeshes.forEach((mesh) => {
         if (mesh.morphTargetInfluences.length) {
-          const nameCtrl = this.morphFolder.add({name: mesh.name || 'Untitled'}, 'name');
+          const nameCtrl = this.morphFolder.add({ name: mesh.name || 'Untitled' }, 'name');
           this.morphCtrls.push(nameCtrl);
         }
         for (let i = 0; i < mesh.morphTargetInfluences.length; i++) {
@@ -676,21 +681,21 @@ module.exports = class Viewer {
     }
   }
 
-  clear () {
+  clear() {
 
-    if ( !this.content ) return;
+    if (!this.content) return;
 
-    this.scene.remove( this.content );
+    this.scene.remove(this.content);
 
     this.content.traverse((node) => {
 
-      if ( !node.isMesh ) return;
+      if (!node.isMesh) return;
 
       node.geometry.dispose();
 
       MAP_NAMES.forEach((map) => {
 
-        if ( node.material[map] ) node.material[map].dispose();
+        if (node.material[map]) node.material[map].dispose();
 
       });
 
