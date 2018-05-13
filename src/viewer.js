@@ -131,10 +131,10 @@ module.exports = class Viewer {
     this.animate = this.animate.bind(this);
     requestAnimationFrame(this.animate);
     window.addEventListener('resize', this.resize.bind(this), false);
-    window.addEventListener('mousedown', this.onMouseDown.bind(this), false);
+    window.addEventListener('dblclick', this.onDoubleClick.bind(this), false);
   }
 
-  onMouseDown(event) {
+  onDoubleClick(event) {
     event.preventDefault();
 
     const canvas = this.renderer.domElement;
