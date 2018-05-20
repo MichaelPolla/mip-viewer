@@ -49,6 +49,7 @@
     "simple-dropzone": "^0.5.1",
     "three": "^0.91.0",
     "three-vignette-background": "^1.0.3",
+    "webpack": "^4.8.3",
     "zipjs-browserify": "^1.0.1"
   },
   "devDependencies": {
