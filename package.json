@@ -20,7 +20,8 @@
     "postinstall": "webpack -p",
     "deploy": "npm run build && now --static && now alias && npm run clean",
     "clean": "rm bundle.js",
-    "postversion": "git push && git push --tags"
+    "postversion": "git push && git push --tags",
+    "web": "budo src/app.js:bundle.js --port $PORT"
   },
   "now": {
     "alias": "gltf-viewer.donmccurdy.com",
