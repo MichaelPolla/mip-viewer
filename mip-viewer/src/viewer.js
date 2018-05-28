@@ -138,7 +138,6 @@ module.exports = class Viewer {
     event.preventDefault();
 
     const canvas = this.renderer.domElement;
-    const annotation = document.querySelector(".annotation");
 
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     this.mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
@@ -148,22 +147,50 @@ module.exports = class Viewer {
     var intersects = this.raycaster.intersectObjects(this.scene.children, true);
 
     if (intersects.length > 0) {
+      switch (intersects[0].object.geometry.type) {
+        case 'SphereGeometry': // Action occured on an existing annotation point
+          let objectId = intersects[0].object.annotationId;
+          console.log("object id:" + objectId);
+          showAnnotation(objectId);
+          break;
+        default:  // Action occured directly on the model
+          addAnnotation(this);
+          break;
+      }
+    }
+
+    function addAnnotation(viewer) {
       intersects[0].object.material.color.setHex(Math.random() * 0xffffff);
-
-      var particle = new THREE.Mesh(new THREE.SphereGeometry(1),
+  
+      let annotationPoint = new THREE.Mesh(new THREE.SphereGeometry(6),
         new THREE.MeshBasicMaterial({ color: 0xff0000 }));
-      particle.position.copy(intersects[0].point);
-      this.scene.add(particle);
+      
+      let id = new Date().getTime(); // simple way to have a somewhat unique id
+      annotationPoint.annotationId = id; 
+      annotationPoint.position.copy(intersects[0].point);
+      annotationPoint.addEventListener('click', console.log("Point cliqué !"), false);
+      viewer.scene.add(annotationPoint);
 
-      this.originalAnnotationVector.copy(intersects[0].point);
-      this.annotationPosition.copy(this.originalAnnotationVector);
-      this.annotationPosition.project(this.activeCamera);
-      this.annotationPosition.x = Math.round((0.5 + this.annotationPosition.x / 2) * (canvas.width / window.devicePixelRatio));
-      this.annotationPosition.y = Math.round((0.5 - this.annotationPosition.y / 2) * (canvas.height / window.devicePixelRatio));
+      const intersectionPoint = intersects[0].point;
 
-      annotation.style.top = `${this.annotationPosition.y}px`;
-      annotation.style.left = `${this.annotationPosition.x}px`;
+      let annotation = CreateAnnotation(id);
+      annotation.setOriginalPosition(intersectionPoint);
 
+      let renderPosition = new THREE.Vector3().copy(intersectionPoint);
+      annotation.renderPosition
+      viewer.originalAnnotationVector.copy(intersects[0].point);
+
+      renderPosition.project(viewer.activeCamera);
+      renderPosition.x = Math.round((0.5 + viewer.annotationPosition.x / 2) * (canvas.width / window.devicePixelRatio));
+      renderPosition.y = Math.round((0.5 - viewer.annotationPosition.y / 2) * (canvas.height / window.devicePixelRatio));
+
+
+      annotation.render(viewer.annotationPosition.x, viewer.annotationPosition.y);
+    }
+
+    function showAnnotation(id) {
+      let annotation = annotations.find(annotation => annotation.id = id);
+      console.log("Annotation content :" + annotation.content);
     }
   }
 
@@ -196,9 +223,12 @@ module.exports = class Viewer {
     this.annotationPosition.x = Math.round((0.5 + this.annotationPosition.x / 2) * (canvas.width / window.devicePixelRatio));
     this.annotationPosition.y = Math.round((0.5 - this.annotationPosition.y / 2) * (canvas.height / window.devicePixelRatio));
 
-    annotation.style.top = `${this.annotationPosition.y}px`;
-    annotation.style.left = `${this.annotationPosition.x}px`;
-    this.annotation.style.opacity = spriteBehindObject ? 0.25 : 1;
+    //annotation.style.top = `${this.annotationPosition.y}px`;
+    //annotation.style.left = `${this.annotationPosition.x}px`;
+    //this.annotation.style.opacity = spriteBehindObject ? 0.25 : 1;
+    if (annotations.length > 0) {
+      annotations[annotations.length - 1].setPosition(this.annotationPosition.x, this.annotationPosition.y);
+    }
   }
 
   resize() {
