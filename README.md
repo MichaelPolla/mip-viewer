@@ -8,6 +8,9 @@ The final product will not necessarily be a full-working software, but more like
 
 This project is made as part of my HES-SO Master of Science in Engineering [(MSE)](https://www.hes-so.ch/en/master-engineering-610.html) studies.
 
-## Overview
+## Quickstart
 
-<img src="project-report/res/overview.png" alt="Overview" width="400"/>
+```bash
+npm install
+npm run dev
+```
