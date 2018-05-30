@@ -29,12 +29,12 @@ french, % ngerman for German
 singlespacing, % Single line spacing, alternatives: onehalfspacing or doublespacing
 %draft, % Uncomment to enable draft mode (no pictures, no links, overfull hboxes indicated)
 %nolistspacing, % If the document is onehalfspacing or doublespacing, uncomment this to set spacing in lists to single
-%liststotoc, % Uncomment to add the list of figures/tables/etc to the table of contents
+liststotoc, % Uncomment to add the list of figures/tables/etc to the table of contents
 %toctotoc, % Uncomment to add the main table of contents to the table of contents
-%parskip, % Uncomment to add space between paragraphs
+parskip, % Uncomment to add space between paragraphs
 %nohyperref, % Uncomment to not load the hyperref package
 headsepline, % Uncomment to get a line under the header
-footsepline,
+%footsepline,
 %chapterinoneline, % Uncomment to place the chapter title next to the number on one line
 %consistentlayout, % Uncomment to change the layout of the declaration, abstract and acknowledgements pages to match the default layout
 ]{MastersDoctoralThesis} % The class file specifying the document structure
@@ -43,10 +43,33 @@ footsepline,
 \usepackage[T1]{fontenc} % Output font encoding for international characters
 
 %----------------------------------------------------------------------------------------
-% Package added later by me (not in the original template)
+% Packages and commands added later by me (not in the original template)
 \usepackage{minted} % for code syntaxing
 \usepackage[colorinlistoftodos,prependcaption,textsize=tiny,obeyFinal]{todonotes}
 \usepackage{pdfpages}
+\usepackage{xargs}  % Use more than one optional parameter in a new command
+
+\newcommandx{\unsure}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
+\newcommandx{\change}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}
+\newcommandx{\info}[2][1=]{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}}
+\newcommandx{\improvement}[2][1=]{\todo[linecolor=plum,backgroundcolor=plum!25,bordercolor=plum,#1]{#2}}
+\newcommandx{\thiswillnotshow}[2][1=]{\todo[disable,#1]{#2}}
+
+%----------------------------------------------------------------------------------------
+%	DEFINE SOME COMMANDS to keep the formatting separated from the content 
+%----------------------------------------------------------------------------------------
+\newcommand{\keyword}[1]{\textbf{#1}}
+\newcommand{\tabhead}[1]{\textbf{#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\file}[1]{\texttt{\bfseries#1}}
+\newcommand{\option}[1]{\texttt{\itshape#1}}
+
+% uncomment to see an exemple
+%\keyword{keyword}
+%\code{code}
+%\file{file}
+%\option{option}
+
 %----------------------------------------------------------------------------------------
 
 \usepackage{mathpazo} % Use the Palatino font by default
@@ -72,21 +95,6 @@ footsepline,
 }
 
 %----------------------------------------------------------------------------------------
-%	DEFINE SOME COMMANDS to keep the formatting separated from the content 
-%----------------------------------------------------------------------------------------
-\newcommand{\keyword}[1]{\textbf{#1}}
-\newcommand{\tabhead}[1]{\textbf{#1}}
-\newcommand{\code}[1]{\texttt{#1}}
-\newcommand{\file}[1]{\texttt{\bfseries#1}}
-\newcommand{\option}[1]{\texttt{\itshape#1}}
-
-% uncomment to see an exemple
-%\keyword{keyword}
-%\code{code}
-%\file{file}
-%\option{option}
-
-%----------------------------------------------------------------------------------------
 %	THESIS INFORMATION
 %----------------------------------------------------------------------------------------
 
@@ -97,7 +105,7 @@ footsepline,
 \author{Michaël \textsc{Polla}} % Your name, this is used in the title page and abstract, print it elsewhere with \authorname
 \addresses{} % Your address, this is not currently used anywhere in the template, print it elsewhere with \addressname
 
-\subject{Biological Sciences} % Your subject area, this is not currently used anywhere in the template, print it elsewhere with \subjectname
+\subject{Computer Sciences} % Your subject area, this is not currently used anywhere in the template, print it elsewhere with \subjectname
 \keywords{} % Keywords for your thesis, this is not currently used anywhere in the template, print it elsewhere with \keywordnames
 \university{\href{http://hepia.hesge.ch}{Hepia}} % Your university's name and URL, this is used in the title page and abstract, print it elsewhere with \univname
 \department{option Ingénierie logicielle} % Your department's name and URL, this is used in the title page and abstract, print it elsewhere with \deptname
@@ -108,6 +116,7 @@ footsepline,
 \hypersetup{pdftitle=\ttitle} % Set the PDF's title to your title
 \hypersetup{pdfauthor=\authorname} % Set the PDF's author to your name
 \hypersetup{pdfkeywords=\keywordnames} % Set the PDF's keywords to your keywords
+%\hypersetup{hidelinks} % See https://tex.stackexchange.com/a/50754/160548 for color configuration
 }
 
 \begin{document}
@@ -173,6 +182,7 @@ footsepline,
 \begin{acknowledgements}
 \addchaptertocentry{\acknowledgementname} % Add the acknowledgements to the table of contents
 The acknowledgments and the people to thank go here, don't forget to include your project advisor\ldots
+
 \end{acknowledgements}
 
 %----------------------------------------------------------------------------------------
@@ -192,7 +202,9 @@ The acknowledgments and the people to thank go here, don't forget to include you
 \begin{abbreviations}{ll} % Include a list of abbreviations (a table of two columns)
 
 \textbf{BIM} & \textbf{B}uilding \textbf{I}nformation \textbf{M}odeling \\
-\textbf{glTF} & \textbf{GL} \textbf{T}ransmission \textbf{F}ormat \\
+\textbf{GPU} & \textbf{G}raphics \textbf{P}rocessing \textbf{U}nit \\
+%\textbf{glTF} & \textbf{GL} \textbf{T}ransmission \textbf{F}ormat \\
+\textbf{PLQ} & \textbf{P}lan \textbf{L}ocalisé de \textbf{Q}uartier \\
 \textbf{SIG} & \textbf{S}ystème d'\textbf{I}nformation \textbf{G}éographique \\
 \textbf{WYSIWYG} & \textbf{W}hat \textbf{Y}ou \textbf{S}ee \textbf{I}s \textbf{W}hat \textbf{Y}ou \textbf{G}et \\
 
@@ -211,7 +223,7 @@ The acknowledgments and the people to thank go here, don't forget to include you
 
 \include{Chapters/Chapter1}
 \include{Chapters/Chapter2} 
-%\include{Chapters/Chapter3}
+\include{Chapters/Chapter3}
 %\include{Chapters/Chapter4} 
 %\include{Chapters/Chapter5} 
 
