@@ -42,12 +42,29 @@ headsepline, % Uncomment to get a line under the header
 \usepackage[utf8]{inputenc} % Required for inputting international characters
 \usepackage[T1]{fontenc} % Output font encoding for international characters
 
+\usepackage{mathpazo} % Use the Palatino font by default
+
+\usepackage[backend=biber, style=authoryear, natbib=true]{biblatex} % Use the bibtex backend with the authoryear citation style (which resembles APA)
+
+\addbibresource{example.bib} % The filename of the bibliography
+
+\usepackage[autostyle=true]{csquotes} % Required to generate language-dependent quotes in the bibliography
+
 %----------------------------------------------------------------------------------------
-% Packages and commands added later by me (not in the original template)
+% FRENCH TRANSLATIONS added by me
+%----------------------------------------------------------------------------------------
+
+\providecaptionname{french}{\acknowledgementname}{Remerciements}
+\providecaptionname{french}{\abbrevname}{Liste des abréviations}
+
+%----------------------------------------------------------------------------------------
+% PACKAGES AND COMMANDS added by me
+%----------------------------------------------------------------------------------------
 \usepackage{minted} % for code syntaxing
 \usepackage[colorinlistoftodos,prependcaption,textsize=tiny,obeyFinal]{todonotes}
 \usepackage{pdfpages}
 \usepackage{xargs}  % Use more than one optional parameter in a new command
+
 
 \newcommandx{\unsure}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
 \newcommandx{\change}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}
@@ -55,31 +72,16 @@ headsepline, % Uncomment to get a line under the header
 \newcommandx{\improvement}[2][1=]{\todo[linecolor=plum,backgroundcolor=plum!25,bordercolor=plum,#1]{#2}}
 \newcommandx{\thiswillnotshow}[2][1=]{\todo[disable,#1]{#2}}
 
-%----------------------------------------------------------------------------------------
-%	DEFINE SOME COMMANDS to keep the formatting separated from the content 
-%----------------------------------------------------------------------------------------
 \newcommand{\keyword}[1]{\textbf{#1}}
 \newcommand{\tabhead}[1]{\textbf{#1}}
 \newcommand{\code}[1]{\texttt{#1}}
 \newcommand{\file}[1]{\texttt{\bfseries#1}}
 \newcommand{\option}[1]{\texttt{\itshape#1}}
-
 % uncomment to see an exemple
 %\keyword{keyword}
 %\code{code}
 %\file{file}
 %\option{option}
-
-%----------------------------------------------------------------------------------------
-
-\usepackage{mathpazo} % Use the Palatino font by default
-
-\usepackage[backend=bibtex,style=authoryear,natbib=true]{biblatex} % Use the bibtex backend with the authoryear citation style (which resembles APA)
-
-\addbibresource{example.bib} % The filename of the bibliography
-
-\usepackage[autostyle=true]{csquotes} % Required to generate language-dependent quotes in the bibliography
-
 %----------------------------------------------------------------------------------------
 %	MARGIN SETTINGS
 %----------------------------------------------------------------------------------------
@@ -98,7 +100,7 @@ headsepline, % Uncomment to get a line under the header
 %	THESIS INFORMATION
 %----------------------------------------------------------------------------------------
 
-\thesistitle{Visionneuse améliorée de modèle SIG 3D} % Your thesis title, this is used in the title and abstract, print it elsewhere with \ttitle
+\thesistitle{Visionneuse améliorée de modèles 3D pour la planification territoriale} % Your thesis title, this is used in the title and abstract, print it elsewhere with \ttitle
 \supervisor{Paul \textsc{Albuquerque}} % Your supervisor's name, this is used in the title page, print it elsewhere with \supname
 \examiner{} % Your examiner's name, this is not currently used anywhere in the template, print it elsewhere with \examname
 %\degree{Doctor of Philosophy} % Your degree name, this is used in the title page and abstract, print it elsewhere with \degreename
@@ -116,7 +118,7 @@ headsepline, % Uncomment to get a line under the header
 \hypersetup{pdftitle=\ttitle} % Set the PDF's title to your title
 \hypersetup{pdfauthor=\authorname} % Set the PDF's author to your name
 \hypersetup{pdfkeywords=\keywordnames} % Set the PDF's keywords to your keywords
-%\hypersetup{hidelinks} % See https://tex.stackexchange.com/a/50754/160548 for color configuration
+\hypersetup{colorlinks=false} % See the FAQ (AppendixA.tex) or https://tex.stackexchange.com/a/50754/160548 for color configuration
 }
 
 \begin{document}
@@ -162,7 +164,7 @@ headsepline, % Uncomment to get a line under the header
 
 {\large Printemps 2018}\\[4cm] % Date
 %\includegraphics{Logo} % University/department logo - uncomment to place it
- 
+\todo{Page de garde ? logos?}
 \vfill
 \end{center}
 \end{titlepage}
@@ -171,19 +173,12 @@ headsepline, % Uncomment to get a line under the header
 %	PROJECT SUMMARY (external page)
 %----------------------------------------------------------------------------------------
 
-\shipout\null % empty page without header/footer and not counted in total pages, see https://tex.stackexchange.com/a/340072/160548
-
 \includepdf[pages={1}]{Figures/project-description.pdf}
 \clearpage
 %----------------------------------------------------------------------------------------
 %	ACKNOWLEDGEMENTS
 %----------------------------------------------------------------------------------------
-
-\begin{acknowledgements}
-\addchaptertocentry{\acknowledgementname} % Add the acknowledgements to the table of contents
-The acknowledgments and the people to thank go here, don't forget to include your project advisor\ldots
-
-\end{acknowledgements}
+\include{Chapters/Acknowledgements}
 
 %----------------------------------------------------------------------------------------
 %	LIST OF CONTENTS/FIGURES/TABLES PAGES
@@ -201,9 +196,12 @@ The acknowledgments and the people to thank go here, don't forget to include you
 
 \begin{abbreviations}{ll} % Include a list of abbreviations (a table of two columns)
 
+\textbf{API} & \textbf{A}pplication \textbf{P}rogramming \textbf{I}nterface \\
 \textbf{BIM} & \textbf{B}uilding \textbf{I}nformation \textbf{M}odeling \\
 \textbf{GPU} & \textbf{G}raphics \textbf{P}rocessing \textbf{U}nit \\
+\textbf{JSON} & \textbf{J}ava\textbf{S}cript \textbf{O}bject \textbf{N}otation \\
 %\textbf{glTF} & \textbf{GL} \textbf{T}ransmission \textbf{F}ormat \\
+\textbf{PaaS} & \textbf{P}latform \textbf{a}s \textbf{a} \textbf{S}ervice \\
 \textbf{PLQ} & \textbf{P}lan \textbf{L}ocalisé de \textbf{Q}uartier \\
 \textbf{SIG} & \textbf{S}ystème d'\textbf{I}nformation \textbf{G}éographique \\
 \textbf{WYSIWYG} & \textbf{W}hat \textbf{Y}ou \textbf{S}ee \textbf{I}s \textbf{W}hat \textbf{Y}ou \textbf{G}et \\
@@ -224,7 +222,7 @@ The acknowledgments and the people to thank go here, don't forget to include you
 \include{Chapters/Chapter1}
 \include{Chapters/Chapter2} 
 \include{Chapters/Chapter3}
-%\include{Chapters/Chapter4} 
+\include{Chapters/Chapter4} 
 %\include{Chapters/Chapter5} 
 
 %----------------------------------------------------------------------------------------
@@ -239,15 +237,14 @@ The acknowledgments and the people to thank go here, don't forget to include you
 %\include{Appendices/AppendixA}
 \include{Appendices/Latex}
 
-
 %----------------------------------------------------------------------------------------
 %	BIBLIOGRAPHY
 %----------------------------------------------------------------------------------------
 
-\printbibliography[heading=bibintoc]
+%\printbibliography[heading=bibintoc]
 
 %----------------------------------------------------------------------------------------
 
 \listoftodos
 
-\end{document}  
+\end{document}
