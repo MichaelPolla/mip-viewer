@@ -48,44 +48,81 @@ Il a été créé pour pallier les variétés de formats rencontrés dans le flu
 De fait, cela en fait un format populaire, très répandu.
 Une rapide recherche sur \textit{GitHub}\footnote{\url{https://github.com/search?q=fbx+viewer}} nous renvoie de nombreux projets de visionneuses \textit{FBX}.
 
+\subsubsection{OBJ}
+\textit{OBJ} est un format libre très utilisé pour transférer des informations d'une application à l'autre. Il s'agit d'un format de données simple, en \textit{ASCII}, qui sert uniquement à représenter la géométrie 3D (\textit{mesh}).
+
+Comme ce format n'inclut pas les informations de couleurs, matériel, transformation et consort, un fichier \textit{MTL} (\textit{\textbf{M}aterial \textbf{T}emplate \textbf{L}ibrary} lui est généralement associé. Ce dernier définit les matériaux d'un objet 3D (coloration, texture, paramètres de réflexions optique...). Malheureusement \textit{MTL} est un format dépassé au vue des technologies actuelles, dont il ne supporte pas les plus récentes.
+
+\subsubsection{3ds}
+\textit{3ds} est l'un des formats utilisé par \textit{Autodesk 3ds Max}. Format natif du logiciel depuis son origine dans les années 90, cela en fait également un format très utilisé pour partager des modèles. Comme son concurrent \textit{OBJ}, il nécessite des fichiers complémentaires (\textit{MAX} pour stocker toutes les informations de la scène.
+
 \subsubsection{COLLADA}
-COLLADA (COLLAborative Design Activity) is an interchange file format for interactive 3D applications. It is managed by the nonprofit technology consortium, the Khronos Group, and has been adopted by ISO as a publicly available specification, ISO/PAS 17506.
+\textit{COLLADA} (\textit{\textbf{COLLA}borative \textbf{D}esign \textbf{A}ctivity})\footnote{\url{https://www.khronos.org/collada}} a intialement été développé par \textit{Sony Computer Entertainment}, et appartient actuellement au \textit{Khronos Group}.
+C'est un format libre, dont la spécification est décrite par une norme ISO\footnote{ISO/PAS 17506:2012: \url{https://www.iso.org/standard/59902.html}}.
 
-COLLADA defines an open standard XML schema for exchanging digital assets among various graphics software applications that might otherwise store their assets in incompatible file formats. COLLADA documents that describe digital assets are XML files, usually identified with a .dae (digital asset exchange) filename extension. [Source : Wikipedia]
+Il a été conçu pour faciliter les échanges entre les différents logiciels. Les documents \textit{COLLADA} décrivent les éléments selon un schéma \textit{XML}, et portent généralement l'extension \textit{DAE} (\textit{\textbf{D}igital \textbf{A}sset \textbf{E}xchange}.
 
-Advantages : maintained by a non profit consortium, ISO, spec publicly available. Open Standard..
-Disadvantages : seems not widely represented : e.g. not many projects of DAE viewers on GitHub
+Ce format est listé comme inactif dans la liste des standards du \textit{Khronos Group}. 
+Bien que cela ne soit pas encore déclaré de façon officielle, il semble que le format \textit{glTF}, présenté en \ref{sec:glTF}, lui succède.
 
-Default format for importing/exporting models in Blender software
+Le \textbf{Khronos Group} est un consortium industriel à but non lucratif, dont le but est de définir des standards ouverts et libres de droits dans les domaines des graphiques 3D, de la réalité virtuelle et augmentée, et du traitement d'images notamment.
 
-\subsection{3ds}
-
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{Figures/khronos-visual-computing-ecosystem.png}
+    \captionsource{Ecosystème des standards proposés par \textit{Khronos}}{khronos-ecosystem}
+    \label{fig:khronos-visual-computing-ecosystem}
+\end{figure}
 
 \subsubsection{glTF}
 \label{sec:glTF}
 
+\textit{glTF} (\textit{\textbf{GL} \textbf{T}ransmission \textbf{F}ormat})\footnote{\url{https://www.khronos.org/gltf/}} est un standard ouvert défini par le \textit{Khronos Group}. Visant le même objectif que son prédécesseur \textit{COLLADA}, ce format a été optimisé au mieux pour réduire l'espace de stockage nécessaire pour les scènes ou modèles 3D représentés, tout en accélérant le chargement et traitement de ceux-ci. 
+\textit{Khronos} le décrit comme le "JPEG de la 3D".
+Ce format utilise \textit{JSON} pour décrire les données.
 
-glTF (GL Transmission Format)\footnote{\url{https://www.khronos.org/gltf/}} is a file format for 3D scenes and models using the JSON standard. It is described by its creators as the "JPEG of 3D." It is an API-neutral runtime asset delivery format developed by the Khronos Group 3D Formats Working Group. [Source : Wikipedia]
-
-sketchfab gltf description and models
-
-Sketchfab provides an autoconverted version in gLTF format for all downloadable models.
-
-\subsection{Logiciels et compatibilité}
-
-
-\section{Building Information Modeling (BIM)}
+Bien que relativement récent (fin 2015), il a rapidement été adopté par les principaux acteurs du marché, et son acceptation continue de s'étendre. À titre d'exemple, \textit{Sketchfab} propose déjà plus de 100'000 modèles dans ce format\footnote{\url{https://blog.sketchfab.com/sketchfab-now-largest-online-repository-gltf-files/}} et a défini \textit{glTF} comme format d'exportation par défaut. Tous les modèles, quelque soit leur format d'origine, peuvent être convertis automatiquement dans ce format lors de leur téléchargement. 
 
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{Figures/bim-process.jpg}
-    \caption{Processus BIM}
-    \label{fig:bim-process}
+    \includegraphics[width=0.8\linewidth]{Figures/gltf-momentum.jpg}
+    \captionsource{Outils, applications, plateformes et sociétés employant \textit{glTF}}{gltf-momentum}
+    \label{fig:gltf-momentum}
 \end{figure}
 
-\url{http://objectif-bim.com/index.php/openbim/bcf-format-de-collaboration-bim}
+\subsection{Gestion des fichiers dans le cadre du projet}
 
-\url{http://njhcadservices.co.uk/?page_id=32}
+On imagine trois cas de figure :
+
+La première possibilité, illustrée en \ref{fig:file-importation-process-native}, est de faire en sorte que l'outil sache lire les fichiers "tels quels", sans effectuer de réelles transformations.
+L'avantage est que, pour autant que l'on ait implémenté le support du format de fichier fournit en entrée, celui-ci sera vraisemblablement rendu correctement. C'est un peu le principe des visionneuses d'images classiques, auxquelles on donne les instructions sur "comment lire tel ou tel format de fichier", et qui affichent correctement chaque pixel à l'écran.
+Le problème de cette solution est qu'elle nécessite un travail conséquent. Pour qu'elle soit efficace, il faut implémenter bon nombre de formats, et qu'il faut être certain de bien avoir respecter les specifications.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{Figures/file-importation-process-native.png}
+    \caption{Cas 1 : support natif des principaux formats}
+    \label{fig:file-importation-process-native}
+\end{figure}
+
+Une variante est de définir un ou quelques formats principaux, complètement supportés par le logiciel. Si l'utilisateur souhaite importer un modèle stocké sous un format non pris en charge, il devra le convertir manuellement, par exemple à l'aide des fonctions d'exportation du logiciel utilisé pour sa conception.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{Figures/file-importation-process-manual-conversion.png}
+    \caption{Cas 2 : conversion manuelle vers le(s) format(s) supportés}
+    \label{fig:file-importation-process-manual-conversion}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{Figures/file-importation-process-auto-conversion.png}
+    \caption{Cas 3 : conversion effectuée par le logiciel, si nécessaire}
+    \label{fig:file-importation-process-auto-conversion}
+\end{figure}
+
+
+soit nativement (le logiciel sait lire différents formats), soit en se basant sur un format courant, vers lequel il est relativement aisé de convertir les autres types de fichiers au préalable.
 
 \section{Système d'information géographique (SIG)}
 Un \textit{SIG} est, comme son nom laisse supposer, un système d'information destiné à gérer des données spatiales ou géographiques. Il est difficile d'en donner une définition exacte, car les domaines concernés sont très vastes.
@@ -117,7 +154,7 @@ Parmi les projets open-source trouvé, nous nous sommes surtout intéressés à 
 
 Le choix s'est porté sur three-gltf-viewer.
 Il s'agit d'un projet développé par un gars de chez Google, spécialisé dans...,  apparemment dans son temps libre.
-Le projet a été démarré récemment (DATE) et est encore actif - à l'heure où ces lignes sont écrites, le dernier \textit{commit} date du 16 avril. Cela conforte dans l'idée que les technologies utilisées pour le concevoir soient modernes.
+Le projet a été démarré récemment (DATE) et toujours développé activement. Cela conforte dans l'idée que les technologies utilisées pour le concevoir soient modernes.
 
 Les spécificités de ce projet sont détaillées sous "Langages et technologies".
 
@@ -162,12 +199,41 @@ Le rendu, au travers du langage \textit{GLSL}, est réalisé par le \textit{GPU}
 
 \section{Annotations}
 
-\todo{IMG: EXEMPLES D'ANNOTATIONS TEXTE + IMAGE}
+Dans nos discussions de cas d'utilisation et de fonctionnalités(\ref{sec:use-cases}), pouvoir commenter et ajouter des informations à un modèle est un aspect qui a souvent été mentionné. C'est en effet une fonctionnalité importante pour toutes les catégories d'utilisateurs.
 
-Décrire les annotations proposées par Sketchfab : a un titre et une description. Peut aussi être une image.
-Principe : en mode édition, double-clic à l'endroit souhaité (point 3d). pour ajouter une annotation. Celle-ci reste liée à la coordonnée choisie, et suit les mouvements appliqués au modèle 3D (p.ex. si on pivote le modèle, alors l'annotation effectue la même transformation).
+Dans le cadre d'une modélisation 3D, la particularité des annotations est d'être \textbf{associées à des coordonnées spécifiques} de celle-ci. Dans ce projet, c'est ce qui distingue les annotations de simples commentaires que l'on ajouterait en regard du modèle ou en dessous de celui-ci (comme des commentaires sur une photo ou une publication par exemple).
 
-Choix de technologie :. En gros, on pourrait tout faire en WebGL (REF sur doc WebGL), mais HTML/CSS est bien mieux adapté aux layouts/polices (voir explication en introduction de https://manu.ninja/webgl-three-js-annotations).
+\subsection{Attributs d'une annotation}
+Les données principales d'une annotation sont : son \textbf{contenu} et ses \text{information de localisation dans le modèle}.
+
+Par contenu, on pense nécessairement à du texte, mais on peut aussi imaginer des images, des liens, une vue 360° prise à l'emplacement concerné, une vidéo, voire un autre modèle 3D (par exemple, de l'intérieur d'un bâtiment)...!
+
+Dans \textit{Sketchfab}, les annotations ont un titre et une description. Cette dernière peut être rédigée en \textit{Markdown}; c'est de cette manière que l'on peut ajouter des liens et des images. Pour l'instant, la plateforme ne supporte pas les autres types de médias.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{Figures/sketchfab-annotation-with-picture.png}
+    \caption{Exemple d'annotation avec une image dans~\textit{Sketchfab}}
+    \label{fig:sketchfab-annotation-with-picture}
+\end{figure}
+
+L'ajout d'une annotation dans Sketchfab se déroule ainsi : en mode édition, avec l'outil d'annotation actif, un double-clic sur le modèle affiche une fenêtre pour rédiger le contenu de l'annotation. Celle-ci est ensuite représentée par un cercle numéroté, qui reste à l'emplacement choisi, même lorsque l'on manipule le modèle (pivoter, déplacer...). 
+
+\begin{figure}
+    \centering
+    \includegraphics{Figures/sketchfab-adding-annotation.png}
+    \caption{Exemple d'ajout d'une annotation en mode édition}
+    \label{fig:sketchfab-adding-annotation}
+\end{figure}
+
+Au niveau technologique : les cercles sont des objets 3D ajoutés à la scène, généralement rendue en \textit{WebGL}. Le dialogue contenant l'annotation pourrait aussi être créé en \textit{WebGL}, mais \textit{HTML/CSS}  est bien mieux adapté pour tout ce qui a trait à la mise en page et aux typographies.
+
+Parmi les fonctionnalités supplémentaires imaginées :
+
+
+\todo{Images vues 360}
+
+\todo{Concepts d'annotations : vue 360. naviguer dans une animation ? exemple : projet à plusieurs années d’intervalle, pouvoir bouger sur un curseur. \url{}}
 
 \section{Stockage}
 Stockage des modèles 3D :
@@ -225,38 +291,3 @@ Avantage : permet de ne pas faire grandir package.json, et d'isoler ce qui conce
 Dans mon cas, comme seul le package 'webpack' était concerné, je l'ai "dédoublé" sous dependencies comme suggéré ici : https://stackoverflow.com/a/41973881/1975002
 
 Heroku a pu ainsi faire une première build réussie de l'application. Celle-ci ne fonctionnait malheureusement pas encore correctement (voir \url{https://github.com/MichaelPolla/mip-viewer/issues/5\#issuecomment-390479224}) 
-
-\section{Formats supportés}
-
-On imagine trois cas de figure :
-
-La première possibilité, illustrée en \ref{fig:file-importation-process-native}, est de faire en sorte que l'outil sache lire les fichiers "tels quels", sans effectuer de réelles transformations.
-L'avantage est que, pour autant que l'on ait implémenté le support du format de fichier fournit en entrée, celui-ci sera vraisemblablement rendu correctement. C'est un peu le principe des visionneuses d'images classiques, auxquelles on donne les instructions sur "comment lire tel ou tel format de fichier", et qui affichent correctement chaque pixel à l'écran.
-Le problème de cette solution est qu'elle nécessite un travail conséquent. Pour qu'elle soit efficace, il faut implémenter bon nombre de formats, et qu'il faut être certain de bien avoir respecter les specifications.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{Figures/file-importation-process-native.png}
-    \caption{Cas 1 : support natif des principaux formats}
-    \label{fig:file-importation-process-native}
-\end{figure}
-
-Une variante est de définir un ou quelques formats principaux, complètement supportés par le logiciel. Si l'utilisateur souhaite importer un modèle stocké sous un format non pris en charge, il devra le convertir manuellement, par exemple à l'aide des fonctions d'exportation du logiciel utilisé pour sa conception.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{Figures/file-importation-process-manual-conversion.png}
-    \caption{Cas 2 : conversion manuelle vers le(s) format(s) supportés}
-    \label{fig:file-importation-process-manual-conversion}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{Figures/file-importation-process-auto-conversion.png}
-    \caption{Cas 3 : conversion effectuée par le logiciel, si nécessaire}
-    \label{fig:file-importation-process-auto-conversion}
-\end{figure}
-
-
-soit nativement (le logiciel sait lire différents formats), soit en se basant sur un format courant, vers lequel il est relativement aisé de convertir les autres types de fichiers au préalable.
-

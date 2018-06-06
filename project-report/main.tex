@@ -44,9 +44,10 @@ headsepline, % Uncomment to get a line under the header
 
 \usepackage{mathpazo} % Use the Palatino font by default
 
-\usepackage[backend=biber, style=authoryear, natbib=true]{biblatex} % Use the bibtex backend with the authoryear citation style (which resembles APA)
-
-\addbibresource{example.bib} % The filename of the bibliography
+% "biblatex" DOESN'T WORK TOGETHER WITH "thebibliography"
+% See https://tex.stackexchange.com/a/277744/160548
+%\usepackage[backend=bibtex, style=authoryear, natbib=true]{biblatex} % Use the bibtex backend with the authoryear citation style (which resembles APA)
+%\addbibresource{example.bib} % The filename of the bibliography
 
 \usepackage[autostyle=true]{csquotes} % Required to generate language-dependent quotes in the bibliography
 
@@ -58,19 +59,37 @@ headsepline, % Uncomment to get a line under the header
 \providecaptionname{french}{\abbrevname}{Liste des abréviations}
 
 %----------------------------------------------------------------------------------------
-% PACKAGES AND COMMANDS added by me
+% PACKAGES, SETTINGS AND COMMANDS added by me
 %----------------------------------------------------------------------------------------
 \usepackage{minted} % for code syntaxing
 \usepackage[colorinlistoftodos,prependcaption,textsize=tiny,obeyFinal]{todonotes}
 \usepackage{pdfpages}
 \usepackage{xargs}  % Use more than one optional parameter in a new command
+\usepackage{scrextend} % Add support for labeling lists. See https://en.wikibooks.org/wiki/LaTeX/List_Structures#Some_special_lists
+\usepackage{subcaption} % Add support for subfigure
 
+\captionsetup{width=0.8\textwidth}
 
-\newcommandx{\unsure}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
-\newcommandx{\change}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}
-\newcommandx{\info}[2][1=]{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}}
-\newcommandx{\improvement}[2][1=]{\todo[linecolor=plum,backgroundcolor=plum!25,bordercolor=plum,#1]{#2}}
-\newcommandx{\thiswillnotshow}[2][1=]{\todo[disable,#1]{#2}}
+%---- Improved figure caption ----
+%  Add the possibility to have a different text in the list of figures, 
+% and to easily add a source.
+%Source: https://tex.stackexchange.com/a/251299/160548
+\usepackage{xparse}
+\NewDocumentCommand{\captionsource}{omm}{%
+  \IfNoValueTF{#1}
+   {% no leading optional argument
+    \caption[#2\formatsource{#3}]{#2}%
+   }
+   {% leading optional argument
+    \caption[#1\formatsource{#3}]{#2}%
+   }
+}
+\NewDocumentCommand{\formatsource}{m}{%
+  \unskip\ (Source:~\cite{#1})%
+}
+%----------------------------------------------
+
+%\newcommand\sourcecaption[2]{\caption[#2 \protect\cite{#1}]{#2}}
 
 \newcommand{\keyword}[1]{\textbf{#1}}
 \newcommand{\tabhead}[1]{\textbf{#1}}
@@ -82,6 +101,12 @@ headsepline, % Uncomment to get a line under the header
 %\code{code}
 %\file{file}
 %\option{option}
+
+\newcommandx{\unsure}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
+\newcommandx{\change}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}
+\newcommandx{\info}[2][1=]{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}}
+\newcommandx{\improvement}[2][1=]{\todo[linecolor=plum,backgroundcolor=plum!25,bordercolor=plum,#1]{#2}}
+\newcommandx{\thiswillnotshow}[2][1=]{\todo[disable,#1]{#2}}
 %----------------------------------------------------------------------------------------
 %	MARGIN SETTINGS
 %----------------------------------------------------------------------------------------
@@ -130,51 +155,51 @@ headsepline, % Uncomment to get a line under the header
 %----------------------------------------------------------------------------------------
 %	TITLE PAGE
 %----------------------------------------------------------------------------------------
+\includepdf[pages=-]{Chapters/CoverPages.pdf}
 
-\begin{titlepage}
-\begin{center}
+%\begin{titlepage}
+%\begin{center}
 
-\vspace*{.06\textheight}
-{\scshape\LARGE \univname\par}\vspace{1.5cm} % University name
-\textsc{\Large Projet d'approfondissement HES-SO}\\[0.5cm] % Thesis type
+%\vspace*{.06\textheight}
+%{\scshape\LARGE \univname\par}\vspace{1.5cm} % University name
+%\textsc{\Large Projet d'approfondissement HES-SO}\\[0.5cm] % Thesis type
 
-\HRule \\[0.4cm] % Horizontal line
-{\huge \bfseries \ttitle\par}\vspace{0.4cm} % Thesis title
-\HRule \\[1.5cm] % Horizontal line
+%\HRule \\[0.4cm] % Horizontal line
+%{\huge \bfseries \ttitle\par}\vspace{0.4cm} % Thesis title
+%\HRule \\[1.5cm] % Horizontal line
  
-\begin{minipage}[t]{0.4\textwidth}
-\begin{flushleft} \large
-\emph{Auteur :}\\
-\authorname % Author name - remove the \href bracket to remove the link
-\end{flushleft}
-\end{minipage}
-\begin{minipage}[t]{0.5\textwidth}
-\begin{flushright} \large
-\emph{Professeur~HES~responsable~:} \\
-\supname % Supervisor name - remove the \href bracket to remove the link  
-\end{flushright}
-\end{minipage}\\[3cm]
+%\begin{minipage}[t]{0.4\textwidth}
+%\begin{flushleft} \large
+%\emph{Auteur :}\\
+%\authorname % Author name - remove the \href bracket to remove the link
+%\end{flushleft}
+%\end{minipage}
+%\begin{minipage}[t]{0.5\textwidth}
+%\begin{flushright} \large
+%\emph{Professeur~HES~responsable~:} \\
+%\supname % Supervisor name - remove the \href bracket to remove the link  
+%\end{flushright}
+%\end{minipage}\\[3cm]
  
-\vfill
+%\vfill
 
-\large
-\textbf\groupname\\\deptname\\[2cm] % Research group name and department name
+%\large
+%\textbf\groupname\\\deptname\\[2cm] % Research group name and department name
  
-\vfill
+%\vfill
 
-{\large Printemps 2018}\\[4cm] % Date
+%{\large Printemps 2018}\\[4cm] % Date
 %\includegraphics{Logo} % University/department logo - uncomment to place it
-\todo{Page de garde ? logos?}
-\vfill
-\end{center}
-\end{titlepage}
+%\vfill
+%\end{center}
+%\end{titlepage}
 
 %----------------------------------------------------------------------------------------
 %	PROJECT SUMMARY (external page)
 %----------------------------------------------------------------------------------------
 
-\includepdf[pages={1}]{Figures/project-description.pdf}
-\clearpage
+%\includepdf[pages={1}]{Figures/project-description.pdf}
+%\clearpage
 %----------------------------------------------------------------------------------------
 %	ACKNOWLEDGEMENTS
 %----------------------------------------------------------------------------------------
@@ -198,6 +223,7 @@ headsepline, % Uncomment to get a line under the header
 
 \textbf{API} & \textbf{A}pplication \textbf{P}rogramming \textbf{I}nterface \\
 \textbf{BIM} & \textbf{B}uilding \textbf{I}nformation \textbf{M}odeling \\
+\textbf{ISO} & \textbf{I}nternational \textbf{O}rganization for \textbf{S}tandardization \\
 \textbf{GPU} & \textbf{G}raphics \textbf{P}rocessing \textbf{U}nit \\
 \textbf{JSON} & \textbf{J}ava\textbf{S}cript \textbf{O}bject \textbf{N}otation \\
 %\textbf{glTF} & \textbf{GL} \textbf{T}ransmission \textbf{F}ormat \\
@@ -235,12 +261,13 @@ headsepline, % Uncomment to get a line under the header
 % Uncomment the lines as you write the Appendices
 
 %\include{Appendices/AppendixA}
-\include{Appendices/Latex}
+\include{Appendices/References}
 
 %----------------------------------------------------------------------------------------
 %	BIBLIOGRAPHY
 %----------------------------------------------------------------------------------------
 
+%\nocite{*}
 %\printbibliography[heading=bibintoc]
 
 %----------------------------------------------------------------------------------------
