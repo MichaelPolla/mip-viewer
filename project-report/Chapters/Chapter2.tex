@@ -89,25 +89,49 @@ Concernant les annotations, celles-ci visent différents buts tels que :
     \item Des annotations d'ordre général sont proposées au public.
 \end{itemize}
 
+\section{Architecture générale}
 
-%%%%%%% BROUILLON %%%%%%%%%%%%%%%%
-Suite à cela, nous étudierons les fonctionnalités qu'il convient d'implémenter, en les décomposant par module. Nous analyserons également l'architecture générale d'une plateforme existante.
+Suite à ces analyses, une architecture générale, représentant les fameuses "briques" nécessaires à la réalisation de la plateforme et qui fourniront les fonctionnalités identifiées, peut être proposée.
 
- Coggle\footnote{\url{https://coggle.it/}}, application web avec une formule gratuite également.
+Pour commencer, un \textit{mindmap} (Figure \ref{fig:mip-viewer-mindmap}) a été réalisé, afin d'identifier les modules qui pourraient composer l'outil.
+Celui-ci a été dessiné avec \textit{Coggle}\footnote{\url{https://coggle.it/}}, une application web dédiée à cela.
 
-\begin{figure}[]
+\begin{figure}[h]
     \centering
     \includegraphics[width=\linewidth]{Figures/mip-viewer-mindmap.png}
+    \captionsetup{width=0.9\textwidth}
     \caption{Résultat du \textit{Mind map} des modules imaginés pour l'application.}
     \label{fig:mip-viewer-mindmap}
 \end{figure}
 
-En essayant de regrouper les fonctionnalités accessibles selon le type d'utilisateur, celles-ci peuvent être résumées dans le schéma~\ref{fig:use-cases}.
+En ne considérant que les fonctionnalités qui nous intéresse dans le cadre de ce projet, nous pouvons constater que l'architecture générale existante de \textit{Sketchfab} peut être représentée de façon similaire.\todo{je sais pas si c'est utile, c'était pour dire qu'on n'est sur la bonne voie}
+
+La figure \ref{fig:mip-viewer-components-interactions-diagram} présente cette fois de manière plus détaillée ces modules, en précisant les principales interactions entre ceux-ci.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{Figures/mip-viewer-components-interactions-diagram.png}
+    \caption{Les "briques" de l'outil et leurs principales interactions.}
+    \label{fig:mip-viewer-components-interactions-diagram}
+\end{figure}
+
+L'analyse a également révélé l'importance des annotations. Celles-ci peuvent améliorer la communication et enrichir les modèles, ainsi que la diversité de contenu qu'elles peuvent intégrer. La figure \ref{fig:various-media-for-annotation} illustre cela.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{Figures/various-media-for-annotation.png}
+    \caption{Exemples de différents médias qu'une annotation pourrait contenir.}
+    \label{fig:various-media-for-annotation}
+\end{figure}
+
+Enfin, la plupart des fonctionnalités sont disponibles pour plusieurs, voire toutes, les catégories d'utilisateurs. Ces derniers ont cependant des accès différents, déterminant les actions qui leur sont autorisées. Par exemple, un jury pourra consulter certains modèles, mais ne pourra pas en ajouter, au contraire d'un architecte ou des participants au concours.
+
+La figure \ref{fig:use-cases} en donne un exemple. Toute personne a accès en consultation aux modèles publiques et aux annotations associées à chacun d'eux. Un membre du jury ou équivalent pourra lui, en plus de cela, ajouter ou éditer des annotations. Enfin, un architecte ou similaire pourra également ajouter de nouveaux modèles.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.8\linewidth]{Figures/use-cases.png}
-    \caption{Exemples des fonctionnalités accessibles selon l'utilisateur.}
+    \includegraphics[width=0.6\linewidth]{Figures/use-cases.png}
+    \caption{Exemples des niveaux d'accès aux fonctionnalités.}
     \label{fig:use-cases}
 \end{figure}
 
