@@ -1,23 +1,26 @@
-\chapter{Bilan}
+\chapter{Conclusion}
 \label{Chapter4}
 
+\section{Bilan}
 % Bilan : où j'en suis, ce qui a été réalisé, choix bon pas bon  1/2p, si + 1p faire chapitre "Discussion"
 % Conclusion :résumer la réalisation 1/4p reprend souvent objectif (cet outil peut être très utile…..)
+% Perspective : où on va a partir de la 1/4p -> peut inclure BIM/SIG
 
-%Bilan BROUILLON
+Il est maintenant temps de faire un bilan de l'état actuel du projet, d'analyser ce qui a bien été, les problèmes rencontrés et ce qui aurait pu être fait autrement.
 
+Les analyses préliminaires ont pu être menées à bien, grâce à suffisament d'explications et de descriptions de cas réels données lors des séances avec Prof. Olivier Donzé. Il aurait été intéressant d'interroger d'autres personnes du domaine afin de confirmer, et éventuellement compléter, les besoins mentionnés en \ref{sec:requirements-analysis}.
 
+Le bilan quant à la réalisation du prototype est, lui, plus mitigé. Utiliser des librairies ou des projets existants implique que l'on s'adapte aux technologies qu'ils emploient. 
+En l'occurence, dans le cas présent, travailler avec la visionneuse choisie comme base (\textit{three-gltf-viewer}, \ref{sec:three-gltf-viewer}) s'est avérée plus difficile que prévu. 
+D'une part, \textit{JavaScript} étant un langage interprété, les éventuels problèmes ne sont détectés qu'à l'exécution, ce qui a ralenti le flux de travail, en obligeant à répéter sans cesse certaines opérations pour s'assurer que tout fonctionne. 
+D'autre part, l'essentiel du code de ce projet est condensé dans un seul fichier, plutôt que réparti en plusieurs de plus petite taille et traitant chacun d'une partie spécifique, ce qui ne facilite pas la navigation. 
+Enfin, il utilise plusieurs librairies externes (\textit{NodeJS}, \textit{Electron},...), impliquant de connaître également ces technologies ou s'y former si l'on ne veut pas se retrouver bloqué lorsque l'on souhaite apporter des modifications.
+De nombreux problèmes rencontrés ont ainsi ralenti le développement, expliquant pourquoi le prototype n'inclut pas autant de fonctionnalités que souhaitées.
+Néanmoins, une petite démo fonctionnelle a pu être réalisée, ce qui n'aurait certainement pas été le cas en partant totalement de zéro.
 
-les analyses préliminaires ont pu être menées à bien
-les 
+D'un point de vue personnel, ce projet a été très enrichissant car il m'a permis de découvrir de nombreux aspects du domaine de l'urbanisme, et d'étudier de nombreuses technologies associées. J'aurais néanmoins apprécié pouvoir proposer un prototype plus complet.
 
-Utiliser des librairies ou des projets existants implique que l'on s'adapte aux technologies qu'ils emploient. En l'occurence, dans le cadre du prototype, travailler avec la visionneuse choisie comme base s'est avérée plus difficile que prévu. D'une part, le langage \textit{JavaScript} n'ayant pas de phase de compilation et ayant un typage faible, ne facilite pas la détection d'erreurs. Il faut continuellement réexécuter le projet et refaire certaines opérations pour s'assurer que ce que l'on vient d'ajouter fonctionne. D'autre part, l'essentiel du code est condensé dans un seul fichier, plutôt que réparti en plusieurs de plus petite taille, ce qui ne facilitait pas la navigation dans le code. Enfin, les outils qu'il emploie lui-même (node, electron,th...) sont d'autant d'éléments qui peuvent causer des soucis lorsque l'on modifie le code.
-
-
-
-D'un point de vue personnel, ce projet a été très enrichissant car il m'a permis de découvrir de nombreux aspects du domaine de l'urbanisme, et d'étudier de nombreuses technologies associées.
-
-\section{Conclusion}
+\section{Travail réalisé}
 Ce projet a mis en évidence l'intérêt que présente la réalisation d'une plateforme de modèles 3D destinée au domaine de l'urbanisme. Ses avantages sont principalement :
 
 \begin{itemize}
@@ -46,11 +49,11 @@ Le \textit{BIM} (\textit{Building Information Modeling}), illustré par la figur
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.6\linewidth]{Figures/bim-process.jpg}
+    \includegraphics[width=0.7\linewidth]{Figures/bim-process.jpg}
     \caption{Processus BIM}
     \label{fig:bim-process}
 \end{figure}
 
 Il est également possible que les éditeurs actuels qui, s'adaptant progressivement au \textit{BIM} car y voyant là une nouvelle manne financière, ajoute un tel produit à leurs suites logiciels. Mais cela comportera alors les désavantages habituels, comme des licences exhorbitantes (se pose alors la question de "qui paie" pour que tous aient accès à l'outil) ou encore le fait d'être dépendant du bon vouloir de l'entreprise pour ajouter des fonctionnalités qui viendraient à manquer.  
 
-Heureusement, l'existence de standards ouverts (tels que ceux proposés par le \textit{Khronos Group}\ref{sec:khronos-group}, et la tendance à l'\textit{open-source} toujours croissante, laissent espérer qu'une solution libre fasse son apparition un jour.
+Heureusement, l'existence de standards ouverts (tels que ceux proposés par le \textit{Khronos Group} (\ref{sec:khronos-group})), et la tendance à l'\textit{open-source} toujours croissante, laissent espérer qu'une solution libre fasse son apparition un jour.
