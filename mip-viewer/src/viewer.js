@@ -349,7 +349,7 @@ module.exports = class Viewer {
     this.updateDisplay();
 
     window.content = this.content;
-    console.info('[glTF Viewer] THREE.Scene exported as `window.content`.');
+    //console.info('[glTF Viewer] THREE.Scene exported as `window.content`.');
     //this.printGraph(this.content);
 
   }
