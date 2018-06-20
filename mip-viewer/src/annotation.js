@@ -1,7 +1,7 @@
 /**
  * List of annotations.
  */
-var annotations = new Array();
+var annotations = [];
 
 /**
  * Create a new annotation, add it to the list.
@@ -16,17 +16,17 @@ function CreateAnnotation(id) {
  * Base factory function for annotations.
  */
 function Annotation(annotationId) {
-    const id = annotationId;
     let originalPosition = new THREE.Vector3();
     let renderPosition = new THREE.Vector3();
 
-    let content = "";
-
     return {
+        id: annotationId,
+        content: "",
+
         render: function (left, top) {
             var annotation = document.getElementById('annotation');
             document.getElementById('annotation-body').innerHTML = '<br><input id="input_description">';
-            document.getElementById('annotation-foot').innerHTML = `<button onclick="saveAnnotation(${id})">OK</button> <button onclick="cancelAnnotationCreation()">Cancel</button>`;
+            document.getElementById('annotation-foot').innerHTML = `<button onclick="saveAnnotation(${annotationId})">OK</button> <button onclick="cancelAnnotationCreation()">Cancel</button>`;
             this.setPosition(left, top);
             annotation.style.display = "block";
         },
@@ -47,11 +47,23 @@ function Annotation(annotationId) {
 }
 
 function cancelAnnotationCreation() {
-    document.getElementById('annotation').style.display = "none";
+    hideAnnotationPopup();
 }
 
 function saveAnnotation(id) {
     let content = document.getElementById('input_description').value;
-    let annotation = annotations.find(x => x.id = id);
+    console.log("data to save: " + content);
+    let annotation = annotations.find(x => x.id == id);
     annotation.content = content;
+    hideAnnotationPopup();
+    
+}
+
+function showAnnotation(id) {
+    let annotation = annotations.find(annotation => annotation.id == id);
+    console.log("Annotation content :" + annotation.content);
+  }
+
+function hideAnnotationPopup() {
+    document.getElementById('annotation').style.display = "none";
 }

@@ -187,11 +187,6 @@ module.exports = class Viewer {
 
       annotation.render(viewer.annotationPosition.x, viewer.annotationPosition.y);
     }
-
-    function showAnnotation(id) {
-      let annotation = annotations.find(annotation => annotation.id = id);
-      console.log("Annotation content :" + annotation.content);
-    }
   }
 
   animate(time) {
