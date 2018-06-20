@@ -31,12 +31,6 @@ function Annotation(annotationId) {
             annotation.style.display = "block";
         },
 
-        ok: function () {
-            var input_description = document.getElementById('input_description').value;
-            console.log("Input :" + input_description);
-            document.getElementById('annotation').style.display = "none";
-        },
-
         setOriginalPosition: function(value) {originalPosition.copy(value)},
 
         setPosition: function (left, top) {
