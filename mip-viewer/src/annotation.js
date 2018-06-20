@@ -23,20 +23,7 @@ function Annotation(annotationId) {
         id: annotationId,
         content: "",
 
-        render: function (left, top) {
-            var annotation = document.getElementById('annotation');
-            document.getElementById('annotation-body').innerHTML = '<br><input id="input_description">';
-            document.getElementById('annotation-foot').innerHTML = `<button onclick="saveAnnotation(${annotationId})">OK</button> <button onclick="cancelAnnotationCreation()">Cancel</button>`;
-            this.setPosition(left, top);
-            annotation.style.display = "block";
-        },
-
         setOriginalPosition: function(value) {originalPosition.copy(value)},
-
-        setPosition: function (left, top) {
-            annotation.style.left = left + "px";
-            annotation.style.top = top + "px";
-        }
     }
 }
 
@@ -46,18 +33,37 @@ function cancelAnnotationCreation() {
 
 function saveAnnotation(id) {
     let content = document.getElementById('input_description').value;
-    console.log("data to save: " + content);
     let annotation = annotations.find(x => x.id == id);
     annotation.content = content;
     hideAnnotationPopup();
     
 }
 
-function showAnnotation(id) {
+function getAnnotation(id) {
     let annotation = annotations.find(annotation => annotation.id == id);
-    console.log("Annotation content :" + annotation.content);
+    return annotation;
   }
 
 function hideAnnotationPopup() {
     document.getElementById('annotation').style.display = "none";
+}
+
+function renderAnnotationPopup(annotation, left, top) {
+        let annotationPopup = document.getElementById('annotation');
+        if (annotation.content == "") {
+            document.getElementById('annotation-body').innerHTML = '<br><input id="input_description"><br><br>';
+            document.getElementById('annotation-foot').innerHTML = `<button onclick="saveAnnotation(${annotation.id})">Save</button> <button onclick="cancelAnnotationCreation()">Cancel</button>`;
+        } else {
+            document.getElementById('annotation-body').innerHTML = `<br>${annotation.content}<br><br>`;
+            document.getElementById('annotation-foot').innerHTML = `<button onclick="hideAnnotationPopup()">Ok</button>`;
+        
+        }
+        setAnnotationPopupPosition(left, top)
+        annotationPopup.style.display = "block";
+}
+
+function setAnnotationPopupPosition(left, top) {
+    let annotationPopup = document.getElementById('annotation');
+    annotationPopup.style.left = left + "px";
+    annotationPopup.style.top = top + "px";
 }
